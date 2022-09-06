@@ -1,52 +1,46 @@
-const AWS = require('aws-sdk');
-require('dotenv').config();
-AWS.config.update({
-    region: "ap-south-1",
-    endpoint: "http://localhost:8000",
-});
+const { dynamoClient } = require("./connection");
 
-const dynamoClient = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = 'users';
-const getCharacters = async () => {
-    const params = {
-        TableName: TABLE_NAME,
-    };
-    const characters = await dynamoClient.scan(params).promise();
-    return characters;
+const TABLE_NAME = "QuestionAnswer";
+const getQuestions = async () => {
+  const params = {
+    TableName: TABLE_NAME,
+  };
+  const questions = await dynamoClient.scan(params).promise();
+  return questions;
 };
 
-const getCharacterById = async (id) => {
-    const params = {
-        TableName: TABLE_NAME,
-        Key: {
-            email_id: id,
-        },
-    };
-    return await dynamoClient.get(params).promise();
+const getQuestionById = async (id) => {
+  const params = {
+    TableName: TABLE_NAME,
+    Key: {
+      questionId: id,
+    },
+  };
+  return await dynamoClient.get(params).promise();
 };
 
-const addOrUpdateCharacter = async (character) => {
-    const params = {
-        TableName: TABLE_NAME,
-        Item: character,
-    };
-    return await dynamoClient.put(params).promise();
+const addOrUpdateQuestion = async (question) => {
+  const params = {
+    TableName: TABLE_NAME,
+    Item: question,
+  };
+  return await dynamoClient.put(params).promise();
 };
 
-const deleteCharacter = async (id) => {
-    const params = {
-        TableName: TABLE_NAME,
-        Key: {
-            id,
-        },
-    };
-    return await dynamoClient.delete(params).promise();
+const deleteQuestion = async (id) => {
+  const params = {
+    TableName: TABLE_NAME,
+    Key: {
+      id,
+    },
+  };
+  return await dynamoClient.delete(params).promise();
 };
 
 module.exports = {
-    dynamoClient,
-    getCharacters,
-    getCharacterById,
-    addOrUpdateCharacter,
-    deleteCharacter,
+  dynamoClient,
+  getQuestions,
+  getQuestionById,
+  addOrUpdateQuestion,
+  deleteQuestion,
 };
