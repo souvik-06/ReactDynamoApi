@@ -1,5 +1,9 @@
 const express = require("express");
 const cors = require("cors");
+const { 
+  v1: uuidv1,
+  v4: uuidv4,
+} = require('uuid');
 
 
 const app = express();
@@ -40,9 +44,12 @@ app.get("/questions/:id", async (req, res) => {
 });
 
 app.post("/questions", async (req, res) => {
-  const question = req.body;
+
+  const {question,answer} = req.body;
+  let id=uuidv4();
+  const data={question:question,answer:answer,questionId:id}
   try {
-    const newQuestion = await addOrUpdateQuestion(question);
+    const newQuestion = await addOrUpdateQuestion(data);
     res.json(newQuestion);
   } catch (err) {
     console.error(err);
