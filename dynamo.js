@@ -1,4 +1,4 @@
-const { dynamoClient } = require("./connection");
+const { dynamoClient, docClient } = require("./connection");
 
 const TABLE_NAME = "QuestionAnswer";
 const getQuestions = async () => {
@@ -17,6 +17,19 @@ const getQuestionById = async (id) => {
     },
   };
   return await dynamoClient.get(params).promise();
+};
+
+const getSearchResult = async (data) => {
+  const params = {
+    TableName: TABLE_NAME,
+
+    FilterExpression: "contains (question, :q) or contains (answer, :a) ",
+    ExpressionAttributeValues: {
+      ":q": { S: data },
+      ":a": { S: data },
+    },
+  };
+  return await docClient.scan(params).promise();
 };
 
 const addOrUpdateQuestion = async (question) => {
@@ -42,5 +55,6 @@ module.exports = {
   getQuestions,
   getQuestionById,
   addOrUpdateQuestion,
+  getSearchResult,
   deleteQuestion,
 };
