@@ -1,4 +1,18 @@
+const elasticsearch = require('@elastic/elasticsearch');
+const { createConnector } = require('aws-elasticsearch-js');
+
+const region = 'ap-south-1';
+const domain = 'http://localhost:8000';
+
+const client = new elasticsearch.Client({
+  nodes: [ domain ],
+  Connection: createConnector({ region })
+});
+
+
+
 const { dynamoClient, docClient } = require("./connection");
+
 
 const TABLE_NAME = "QuestionAnswer";
 const getQuestions = async () => {
@@ -19,17 +33,24 @@ const getQuestionById = async (id) => {
   return await dynamoClient.get(params).promise();
 };
 
+//Api for searching
 const getSearchResult = async (data) => {
   const params = {
     TableName: TABLE_NAME,
 
-    FilterExpression: "contains (question, :q) or contains (answer, :a) ",
+     FilterExpression: "contains(qa, :qa)  ",
+    //FilterExpression: "question in (:q )  ",
     ExpressionAttributeValues: {
-      ":q": { S: data },
-      ":a": { S: data },
+      ":qa": { S: data },
+      //":a": { S:  data},
     },
   };
+
   return await docClient.scan(params).promise();
+
+ 
+
+
 };
 
 const addOrUpdateQuestion = async (question) => {

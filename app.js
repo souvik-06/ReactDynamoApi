@@ -45,8 +45,10 @@ app.get("/questions", async (req, res) => {
 
 app.get("/questionsans/:data", async (req, res) => {
     const data = req.params.data;
+    
     try {
       const question = await getSearchResult(data);
+      
       res.json(question);
     } catch (err) {
       console.error(err);
@@ -58,7 +60,8 @@ app.post("/questions", async (req, res) => {
 
   const {question,answer} = req.body;
   let id=uuidv4();
-  const data={question:question,answer:answer,questionId:id}
+  const qa=question.toLowerCase()+" "+answer.toLowerCase();
+  const data={question:question,answer:answer,questionId:id,qa: qa}
   try {
     const newQuestion = await addOrUpdateQuestion(data);
     res.json(newQuestion);

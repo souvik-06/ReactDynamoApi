@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.165.0",
+    "aws-elasticsearch-js": "^1.0.3",
     "aws-sdk": "^2.858.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
