@@ -62,7 +62,7 @@ const updateQuestion = async (question) => {
     ExpressionAttributeValues: {
       ":q": question.question,
       ":a": question.answer,
-      ":qa": question.question +" "+question.answer,
+      ":qa": question.question.toLowerCase() +" "+question.answer.toLowerCase(),
     },
   };
   return await dynamoClient.update(params).promise();
