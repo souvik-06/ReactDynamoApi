@@ -32,16 +32,16 @@ app.get("/questions", async (req, res) => {
   }
 });
 
-// app.get("/questions/:id", async (req, res) => {
-//   const id = parseInt(req.params.id);
-//   try {
-//     const question = await getQuestionById(id);
-//     res.json(question);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ err: "Something went wrong" });
-//   }
-// });
+app.get("/questions/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const question = await getQuestionById(id);
+    res.json(question);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: "Something went wrong" });
+  }
+});
 
 app.get("/questionsans/:data", async (req, res) => {
     const data = req.params.data;
