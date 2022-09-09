@@ -1,18 +1,15 @@
-const elasticsearch = require('@elastic/elasticsearch');
-const { createConnector } = require('aws-elasticsearch-js');
+const elasticsearch = require("@elastic/elasticsearch");
+const { createConnector } = require("aws-elasticsearch-js");
 
-const region = 'ap-south-1';
-const domain = 'http://localhost:8000';
+const region = "ap-south-1";
+const domain = "http://localhost:8000";
 
 const client = new elasticsearch.Client({
-  nodes: [ domain ],
-  Connection: createConnector({ region })
+  nodes: [domain],
+  Connection: createConnector({ region }),
 });
 
-
-
 const { dynamoClient, docClient } = require("./connection");
-
 
 const TABLE_NAME = "QuestionAnswer";
 const getQuestions = async () => {
@@ -37,8 +34,7 @@ const getQuestionById = async (id) => {
 const getSearchResult = async (data) => {
   const params = {
     TableName: TABLE_NAME,
-
-     FilterExpression: "contains(qa, :qa)  ",
+    FilterExpression: "contains(qa, :qa)  ",
     //FilterExpression: "question in (:q )  ",
     ExpressionAttributeValues: {
       ":qa": { S: data },
@@ -47,10 +43,6 @@ const getSearchResult = async (data) => {
   };
 
   return await docClient.scan(params).promise();
-
- 
-
-
 };
 
 const addOrUpdateQuestion = async (question) => {
@@ -59,6 +51,21 @@ const addOrUpdateQuestion = async (question) => {
     Item: question,
   };
   return await dynamoClient.put(params).promise();
+};
+const updateQuestion = async (question) => {
+  const params = {
+    TableName: TABLE_NAME,
+    Key: {
+      questionId: question.id,
+    },
+    UpdateExpression: "set question = :q, answer = :a, qa = :qa",
+    ExpressionAttributeValues: {
+      ":q": question.question,
+      ":a": question.answer,
+      ":qa": question.question +" "+question.answer,
+    },
+  };
+  return await dynamoClient.update(params).promise();
 };
 
 const deleteQuestion = async (id) => {
@@ -78,4 +85,5 @@ module.exports = {
   addOrUpdateQuestion,
   getSearchResult,
   deleteQuestion,
+  updateQuestion
 };

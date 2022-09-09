@@ -13,7 +13,8 @@ const {
   getQuestions,
   deleteQuestion,
   getQuestionById,
-  getSearchResult
+  getSearchResult,
+  updateQuestion
 } = require("./dynamo");
 
 app.use(express.json());
@@ -76,7 +77,7 @@ app.put("/questions/:id", async (req, res) => {
   const { id } = req.params;
   question.id = id;
   try {
-    const newQuestion = await addOrUpdateQuestion(question);
+    const newQuestion = await updateQuestion(question);
     res.json(newQuestion);
   } catch (err) {
     console.error(err);
