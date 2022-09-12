@@ -72,7 +72,7 @@ const deleteQuestion = async (id) => {
   const params = {
     TableName: TABLE_NAME,
     Key: {
-      id,
+      questionId: id,
     },
   };
   return await dynamoClient.delete(params).promise();
